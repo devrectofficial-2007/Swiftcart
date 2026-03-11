@@ -4,7 +4,7 @@ import 'package:firebase_auth/firebase_auth.dart';
 import 'firebase_options.dart';
 import 'screens/splash_screen.dart';
 import 'screens/login_screen.dart';
-import 'screens/admin_screen.dart';
+import 'screens/admin/admin_screen.dart';
 import 'screens/user_screen.dart';
 import 'services/auth_service.dart';
 
@@ -63,6 +63,13 @@ class _AuthWrapperState extends State<AuthWrapper> {
               }
 
               final role = roleSnapshot.data;
+              // If role is null, set it to 'user' by default and show UserScreen
+              if (role == null || role.isEmpty) {
+                // Set default role for new users
+                _authService.setUserRole(snapshot.data!.uid, 'user');
+                return const UserScreen();
+              }
+
               if (role == 'admin') {
                 return const AdminScreen();
               } else {
